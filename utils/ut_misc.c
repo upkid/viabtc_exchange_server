@@ -32,6 +32,7 @@
 
 int process_exist(const char *fmt, ...)
 {
+    // PATH_MAX 是一个预定义的宏，表示文件路径名的最大长度。在 Linux 系统中，PATH_MAX 的默认值为 4096。
     char name[PATH_MAX];
 	va_list ap;
     va_start(ap, fmt);
@@ -340,3 +341,74 @@ time_t get_timezone_offset(void)
     }
 }
 
+// 系统调用
+/*
+open() 函数是一个系统调用，用于打开文件并返回文件描述符。它的原型如下：
+
+    #include <sys/types.h>
+    #include <sys/stat.h>
+    #include <fcntl.h>
+
+    int open(const char *pathname, int flags);
+    int open(const char *pathname, int flags, mode_t mode);
+    其中，pathname 是文件路径名，flags 是打开文件的标志，mode 是新建文件的权限。open() 函数返回一个非负整数，表示文件描述符。如果出错，返回值为 -1。
+
+    flags 参数可以是以下值之一或它们的组合：
+
+    O_RDONLY：只读打开文件。
+    O_WRONLY：只写打开文件。
+    O_RDWR：读写打开文件。
+    O_CREAT：如果文件不存在，则新建文件。
+    O_EXCL：如果同时指定了 O_CREAT 标志，且文件已经存在，则出错。
+    O_TRUNC：如果文件已经存在，将其截断为零长度。
+    O_APPEND：每次写操作都追加到文件末尾。
+    O_NONBLOCK：以非阻塞方式打开文件。
+    O_SYNC：每次写操作都等待物理 I/O 操作完成。
+    O_DIRECTORY：如果 pathname 不是目录，则出错。
+    O_NOFOLLOW：如果 pathname 是符号链接，则出错。
+    mode 参数只在创建新文件时使用，用于指定文件的权限。它可以是以下值之一或它们的组合：
+
+    S_IRUSR：用户读权限。
+    S_IWUSR：用户写权限。
+    S_IXUSR：用户执行权限。
+    S_IRGRP：组读权限。
+    S_IWGRP：组写权限。
+    S_IXGRP：组执行权限。
+    S_IROTH：其他用户读权限。
+    S_IWOTH：其他用户写权限。
+    S_IXOTH：其他用户执行权限。
+
+flock() 函数用于对文件进行加锁和解锁操作。它的原型如下：
+
+    #include <sys/file.h>
+
+    int flock(int fd, int operation);
+    其中，fd 是文件描述符，operation 是锁操作。flock() 函数返回 0 表示成功，-1 表示失败。
+
+    operation 参数可以是以下值之一：
+
+    LOCK_SH：共享锁，允许多个进程同时读取文件。
+    LOCK_EX：排他锁，只允许一个进程写入文件。
+    LOCK_UN：解锁文件。
+    LOCK_NB：以非阻塞方式尝试获取锁。
+    如果指定了 LOCK_NB 标志，但无法获取锁，则 flock() 函数会立即返回，并设置 errno 为 EWOULDBLOCK。
+
+    lockf() 函数详解
+    lockf() 函数也用于对文件进行加锁和解锁操作，但它比 flock() 函数更加灵活。它的原型如下：
+
+    #include <unistd.h>
+
+    int lockf(int fd, int cmd, off_t len);
+    其中，fd 是文件描述符，cmd 是锁操作，len 是锁定的字节数。lockf() 函数返回 0 表示成功，-1 表示失败。
+
+    cmd 参数可以是以下值之一：
+
+    F_LOCK：获取锁。
+    F_TLOCK：尝试获取锁，如果无法获取则立即返回。
+    F_ULOCK：释放锁。
+    F_TEST：测试锁状态，如果可以获取锁，则返回 0。
+    len 参数用于指定锁定的字节数，如果 len 为 0，则表示锁定整个文件。
+
+    与 flock() 函数相比，lockf() 函数的优势在于可以对文件的任意部分进行加锁和解锁操作。
+    但需要注意的是，lockf() 函数只能在同一进程内的不同线程之间使用，不能在不同进程之间使用。
+*/

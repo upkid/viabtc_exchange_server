@@ -1,5 +1,5 @@
 /*
- * Description: 
+ * Description:
  *     History: yang@haipo.me, 2017/04/21, create
  */
 
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
             error(EXIT_FAILURE, errno, "fork error");
         } else if (pid == 0) {
             process_title_set("%s_worker_%d", __process__, i);
-            daemon(1, 1);
+            daemon(1, 1); // daemon(nochdir, noclose)
             process_keepalive();
             if (i != 0) {
                 dlog_set_no_shift(default_dlog);

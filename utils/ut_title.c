@@ -1,5 +1,5 @@
 /*
- * Description: 
+ * Description:
  *     History: yang@haipo.me, 2016/03/26, create
  */
 
@@ -29,7 +29,7 @@ void process_title_init(int argc, char *argv[])
     char *base = argv[0];
     char *tail = argv[argc-1] + strlen(argv[argc-1]) + 1;
 
-    char **envp = environ;
+    char **envp = environ; // 存放的环境 包括命令行参数
     for (int i = 0; envp[i]; ++i) {
         if (envp[i] < tail)
             continue;
